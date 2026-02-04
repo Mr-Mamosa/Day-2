@@ -1,84 +1,114 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { profile } from "@/lib/data";
+import { Terminal } from "lucide-react";
 
-const asciiLogo = `
-   /\
-  /  \
- /    \
-/______\
-  |  |
-`;
-
-const lines = [
-  { label: "OS", value: profile.stats.os },
-  { label: "Host", value: "arch-linux" },
-  { label: "Kernel", value: "6.8.9-arch1-1" },
-  { label: "Uptime", value: profile.stats.uptime },
-  { label: "Shell", value: profile.stats.shell },
-  { label: "Theme", value: profile.stats.theme },
-  { label: "Font", value: "Geist Mono" },
+const neofetchOutput = [
+  "OS: Arch Linux x86_64",
+  "Host: Gaming Laptop",
+  "Kernel: 6.8.9-arch1-1",
+  "Uptime: 3 years",
+  "Shell: Zsh (Vim Mode)",
+  "Resolution: 1920x1080",
 ];
 
-export default function TerminalBlock() {
-  const [typedLines, setTypedLines] = useState<number>(0);
+const TerminalBlock = () => {
+  const [lines, setLines] = useState<string[]>([]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTypedLines((prev) => (prev < lines.length + 2 ? prev + 1 : prev));
-    }, 150);
-    return () => clearInterval(interval);
+    let index = 0;
+    let interval: NodeJS.Timeout;
+
+    const timer = setTimeout(() => {
+      interval = setInterval(() => {
+        setLines((prev) => {
+          // Stop when all lines are printed
+          if (index >= neofetchOutput.length) {
+            clearInterval(interval);
+            return prev;
+          }
+
+          const nextLine = neofetchOutput[index];
+          index++;
+
+          return [...prev, nextLine];
+        });
+      }, 150);
+    }, 800);
+
+    return () => {
+      clearTimeout(timer);
+      if (interval) clearInterval(interval);
+    };
   }, []);
 
   return (
-    <div className="w-full max-w-lg mx-auto mt-12 font-mono text-sm md:text-base p-6 rounded-lg bg-surface border border-border shadow-2xl overflow-hidden relative group">
-      {/* Terminal Controls */}
-      <div className="flex gap-2 mb-4">
-        <div className="w-3 h-3 rounded-full bg-red-500/50" />
-        <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
-        <div className="w-3 h-3 rounded-full bg-green-500/50" />
-      </div>
-
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* ASCII Art */}
-        <div className="hidden md:block text-emerald-500 font-bold select-none leading-tight">
-          <pre>{asciiLogo}</pre>
+    <motion.div
+      drag
+      dragMomentum={false}
+      whileDrag={{ scale: 1.02, cursor: "grabbing" }}
+      dragConstraints={{ left: -300, right: 300, top: -200, bottom: 200 }}
+      className="w-full max-w-md mx-auto bg-[#0a0a0a] border border-zinc-800 rounded-lg shadow-2xl overflow-hidden"
+    >
+      {/* Title Bar */}
+      <div className="flex items-center justify-between p-3 bg-zinc-900/50 border-b border-zinc-800 cursor-grab active:cursor-grabbing">
+        <div className="flex items-center space-x-2">
+          <div className="w-3 h-3 bg-[#ff5f56] rounded-full shadow-inner" />
+          <div className="w-3 h-3 bg-[#ffbd2e] rounded-full shadow-inner" />
+          <div className="w-3 h-3 bg-[#27c93f] rounded-full shadow-inner" />
         </div>
 
-        {/* Info */}
-        <div className="flex-1 space-y-1">
-          <div className="flex gap-2">
-            <span className="text-emerald-500">adnan@archlinux</span>
-            <span className="text-muted">~</span>
-          </div>
-          
-          <div className="my-2 border-t border-dashed border-border w-full" />
+        <div className="flex items-center text-zinc-400 font-mono text-xs tracking-widest uppercase">
+          <Terminal size={14} className="mr-2 opacity-50" />
+          zsh — 80x24
+        </div>
 
-          {lines.map((line, index) => (
-             <motion.div
-                key={line.label}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: typedLines > index ? 1 : 0, x: typedLines > index ? 0 : -10 }}
-                transition={{ duration: 0.2 }}
-                className="flex gap-4"
-             >
-                <span className="text-emerald-500 min-w-[80px] font-bold">{line.label}:</span>
-                <span className="text-muted">{line.value}</span>
-             </motion.div>
-          ))}
-          
-           <motion.div
-             initial={{ opacity: 0 }}
-             animate={{ opacity: typedLines > lines.length ? 1 : 0 }}
-             className="pt-2 flex gap-2 animate-pulse"
-           >
-              <span className="text-emerald-500">➜</span>
-              <span className="text-foreground">_</span>
-           </motion.div>
+        <div className="w-12" />
+      </div>
+
+      {/* Body */}
+      <div className="p-6 font-mono text-xs sm:text-sm text-left min-h-[220px]">
+        {/* Command line */}
+        <div className="flex items-center gap-2">
+          <span className="text-[#98c379]">➜</span>
+          <span className="text-[#61afef]">~</span>
+          <span className="text-zinc-100">neofetch</span>
+
+          {/* Blinking cursor */}
+          <motion.span
+            animate={{ opacity: [1, 0] }}
+            transition={{ repeat: Infinity, duration: 0.8 }}
+            className="w-2 h-4 bg-zinc-400"
+          />
+        </div>
+
+        {/* Output */}
+        <div className="mt-4 space-y-1.5">
+          {lines.map((line, index) => {
+            if (!line) return null; // safety guard
+
+            const [label, value] = line.split(": ");
+
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: -5 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex"
+              >
+                <span className="text-[#c678dd] font-bold w-28 shrink-0">
+                  {label}:
+                </span>
+
+                <span className="text-zinc-300">{value}</span>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
-}
+};
+
+export default TerminalBlock;

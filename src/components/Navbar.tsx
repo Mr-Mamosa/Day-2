@@ -1,51 +1,37 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
-import { Home, Briefcase, User, Terminal } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { motion } from 'framer-motion';
+import { Home, User, Briefcase } from 'lucide-react';
 
-const links = [
-  { href: "/", label: "Home", icon: Home },
-  { href: "/work", label: "Work", icon: Briefcase },
-  { href: "/about", label: "About", icon: User },
+const navItems = [
+  { href: '#home', icon: <Home /> },
+  { href: '#about', icon: <User /> },
+  { href: '#projects', icon: <Briefcase /> },
 ];
 
-export default function Navbar() {
-  const pathname = usePathname();
-
+const Navbar = () => {
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-      <div className="flex items-center gap-2 p-2 rounded-full bg-surface/80 backdrop-blur-md border border-border shadow-2xl">
-        {links.map((link) => {
-          const isActive = pathname === link.href;
-          return (
-            <Link key={link.href} href={link.href} className="relative">
-              <div
-                className={cn(
-                  "p-3 rounded-full transition-all duration-300 flex items-center justify-center relative group",
-                  isActive ? "text-background bg-foreground" : "text-muted hover:text-foreground hover:bg-white/10"
-                )}
-              >
-                <link.icon size={20} />
-                {isActive && (
-                    <motion.div
-                        layoutId="active-nav"
-                        className="absolute inset-0 rounded-full bg-foreground -z-10"
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    />
-                )}
-                
-                {/* Tooltip */}
-                <span className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-surface border border-border rounded text-xs text-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                    {link.label}
-                </span>
-              </div>
-            </Link>
-          );
-        })}
+    <motion.nav
+      initial={{ y: 100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      className="fixed bottom-8 left-1/2 -translate-x-1/2"
+    >
+      <div className="flex items-center justify-center p-2 space-x-2 bg-white/10 backdrop-blur-md rounded-full shadow-lg">
+        {navItems.map((item) => (
+          <motion.a
+            key={item.href}
+            href={item.href}
+            whileHover={{ scale: 1.2, y: -5 }}
+            transition={{ type: 'spring', stiffness: 300 }}
+            className="p-3 text-white rounded-full"
+          >
+            {item.icon}
+          </motion.a>
+        ))}
       </div>
-    </div>
+    </motion.nav>
   );
-}
+};
+
+export default Navbar;
