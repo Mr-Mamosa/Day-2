@@ -44,12 +44,14 @@ const TerminalBlock = () => {
   }, []);
 
   return (
-    <motion.div
-      drag
-      dragMomentum={false}
-      whileDrag={{ scale: 1.02, cursor: "grabbing" }}
-      dragConstraints={{ left: -300, right: 300, top: -200, bottom: 200 }}
-      className="w-full max-w-md mx-auto bg-[#0a0a0a] border border-zinc-800 rounded-lg shadow-2xl overflow-hidden"
+  <motion.div
+  drag
+  dragMomentum={false}
+  dragElastic={0.05} // Adds a "rubber-band" feel at the edge of constraints
+  dragTransition={{ power: 0.1, timeConstant: 200 }} // Smoothes out the stop
+  whileDrag={{ scale: 1.02, rotate: 0.5 }} // Subtle tilt when grabbed
+  dragConstraints={{ left: -400, right: 400, top: -200, bottom: 200 }}
+  className="w-full max-w-md mx-auto bg-[#0a0a0a] border border-zinc-800 rounded-lg shadow-2xl overflow-hidden"
     >
       {/* Title Bar */}
       <div className="flex items-center justify-between p-3 bg-zinc-900/50 border-b border-zinc-800 cursor-grab active:cursor-grabbing">
