@@ -1,81 +1,51 @@
-import React from "react";
-import { Button } from "./ui/button";
+"use client";
+
 import Link from "next/link";
-import { FiGithub } from "react-icons/fi";
-import { IoDocumentTextOutline } from "react-icons/io5";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
+import { Home, Briefcase, User, Terminal } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-const Navbar = () => {
+const links = [
+  { href: "/", label: "Home", icon: Home },
+  { href: "/work", label: "Work", icon: Briefcase },
+  { href: "/about", label: "About", icon: User },
+];
+
+export default function Navbar() {
+  const pathname = usePathname();
+
   return (
-    <header className="py-4">
-      <nav className="max-w-[586px] mx-auto bg-black/85 flex flex-wrap justify-between items-center py-2 px-4 rounded-full border outline-none shadow-md fixed left-0 right-0 z-50">
-        <div>
-          <Link href="/">
-            <img src="/img/brandLogo.png" alt="Brand Logo" />
-          </Link>
-        </div>
-
-        <div className="">
-          <ul className="flex-center flex-wrap">
-            <li className="">
-              <Button variant="link">
-                <Link href="/#">Home</Link>
-              </Button>
-            </li>
-            <li className="sm:block hidden">
-              <Button variant="link">
-                <Link href="/#projects">Projects</Link>
-              </Button>
-            </li>
-            <li className="sm:block hidden">
-              <Button variant="link">
-                <Link href="/#experience">Experience</Link>
-              </Button>
-            </li>
-          </ul>
-        </div>
-
-        <div className="flex-between gap-2 flex-wrap">
-          <Tooltip>
-            <TooltipTrigger>
-              <Link
-                target="_blank"
-                rel="noreferrer"
-                href="https://github.com/SteeveSticks"
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+      <div className="flex items-center gap-2 p-2 rounded-full bg-surface/80 backdrop-blur-md border border-border shadow-2xl">
+        {links.map((link) => {
+          const isActive = pathname === link.href;
+          return (
+            <Link key={link.href} href={link.href} className="relative">
+              <div
+                className={cn(
+                  "p-3 rounded-full transition-all duration-300 flex items-center justify-center relative group",
+                  isActive ? "text-background bg-foreground" : "text-muted hover:text-foreground hover:bg-white/10"
+                )}
               >
-                <FiGithub className="size-6 text-white hover:text-white/90 cursor-pointer mr-2" />
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent>GitHub</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger>
-              <a
-                download
-                target="_blank"
-                rel="noopener noreferrer"
-                href="/Resume (7).pdf"
-              >
-                <IoDocumentTextOutline className="size-6 text-white hover:text-white/90 cursor-pointer" />
-              </a>
-            </TooltipTrigger>
-            <ul className="flex-between flex-wrap"></ul>
-            <TooltipContent>Resume</TooltipContent>
-          </Tooltip>
-
-          <div className="border-l">
-            <Button className="ml-2">
-              <Link href="/#contact">Contact</Link>
-            </Button>
-          </div>
-        </div>
-      </nav>
-    </header>
+                <link.icon size={20} />
+                {isActive && (
+                    <motion.div
+                        layoutId="active-nav"
+                        className="absolute inset-0 rounded-full bg-foreground -z-10"
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    />
+                )}
+                
+                {/* Tooltip */}
+                <span className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-surface border border-border rounded text-xs text-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                    {link.label}
+                </span>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </div>
   );
-};
-
-export default Navbar;
+}
