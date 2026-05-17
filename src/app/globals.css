@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./cmdk.css";
 
 @theme {
   /* This connects your Geist fonts to Tailwind */

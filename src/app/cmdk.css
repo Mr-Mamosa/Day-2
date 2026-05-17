@@ -1,0 +1,62 @@
+
+.dark .cmdk-dialog {
+    background-color: #111;
+    color: #eee;
+}
+
+.matrix .cmdk-dialog {
+    background-color: #000;
+    color: #0f0;
+    border: 1px solid #0f0;
+}
+.cmdk-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .cmdk-input {
+    width: 100%;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    border-bottom: 1px solid #eee;
+    outline: none;
+  }
+  
+  .cmdk-list {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  .cmdk-item {
+    padding: 12px 16px;
+    cursor: pointer;
+  }
+  
+  .cmdk-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .cmdk-group {
+    padding: 8px 0;
+  }
+  
+  .cmdk-group-heading {
+    padding: 4px 16px;
+    font-size: 12px;
+    color: #999;
+  }
+  
+  .cmdk-empty {
+    padding: 16px;
+    text-align: center;
+    color: #999;
+  }
+  

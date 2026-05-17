@@ -20,7 +20,7 @@ const item = {
   show: { opacity: 1, y: 0 },
 };
 
-export default function Work() {
+export default function WorkContent() {
   return (
     <div className="pt-12">
       <motion.h2
