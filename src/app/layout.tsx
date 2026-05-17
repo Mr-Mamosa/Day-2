@@ -18,6 +18,7 @@ export default function RootLayout({
       <body className="bg-[#050505] text-white">
         <div className="scanline-overlay" />
         <div className="noise-overlay" />
+        <div className="aurora-effect" />
         {children}
       </body>
     </html>
