@@ -1,6 +1,5 @@
 "use client";
 
-import { Octokit } from "@octokit/rest";
 import { useEffect, useState } from "react";
 
 type Activity = {
@@ -8,47 +7,28 @@ type Activity = {
   commit: any;
 }[];
 
-async function getGithubActivity() {
-  const octokit = new Octokit();
-
-  try {
-    const repos = await octokit.repos.listForUser({
-      username: "Mr-Mamosa",
-      type: "owner",
-      sort: "pushed",
-      per_page: 5,
-    });
-
-    const activity = await Promise.all(
-      repos.data.map(async (repo) => {
-        if (repo.size === 0) {
-          return null;
-        }
-        const commits = await octokit.repos.listCommits({
-          owner: "Mr-Mamosa",
-          repo: repo.name,
-          per_page: 1,
-        });
-        return {
-          repo: repo.name,
-          commit: commits.data[0],
-        };
-      })
-    );
-
-    return activity.filter(Boolean) as Activity;
-  } catch (error) {
-    console.error("Error fetching GitHub activity:", error);
-    return null;
-  }
-}
-
 const LiveActivity = () => {
   const [activity, setActivity] = useState<Activity | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    getGithubActivity().then(setActivity);
+    fetch("/api/github-activity")
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to fetch activity");
+        }
+        return res.json();
+      })
+      .then(setActivity)
+      .catch((err) => {
+        console.error(err);
+        setError(err.message);
+      });
   }, []);
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   if (!activity) {
     return <div>Loading activity...</div>;

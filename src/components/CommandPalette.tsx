@@ -6,10 +6,11 @@ import HomeContent from './content/Home';
 import AboutContent from './content/About';
 import WorkContent from './content/Work';
 import WPMTest from './content/WPMTest';
+import { Home, Briefcase, User, Github, Sun, Moon, TestTube } from 'lucide-react';
 
 const CommandPalette = () => {
     const [open, setOpen] = React.useState(false)
-    const { openWindow, toggleTheme, closeAllWindows } = useWindowManager();
+    const { openWindow, toggleTheme, theme } = useWindowManager();
 
     React.useEffect(() => {
         const down = (e: KeyboardEvent) => {
@@ -29,15 +30,33 @@ const CommandPalette = () => {
         <Command.Empty>No results found.</Command.Empty>
 
         <Command.Group heading="Navigation">
-          <Command.Item onSelect={() => openWindow('home', '~/home', <HomeContent />)}>Navigate to Home</Command.Item>
-          <Command.Item onSelect={() => openWindow('work', '~/work', <WorkContent />)}>Navigate to Work</Command.Item>
-          <Command.Item onSelect={() => openWindow('about', '~/about', <AboutContent />)}>Navigate to About</Command.Item>
+          <Command.Item onSelect={() => openWindow('home', '~/home', <HomeContent />)}>
+            <Home className="mr-2" />
+            Navigate to Home
+          </Command.Item>
+          <Command.Item onSelect={() => openWindow('work', '~/work', <WorkContent />)}>
+            <Briefcase className="mr-2" />
+            Navigate to Work
+          </Command.Item>
+          <Command.Item onSelect={() => openWindow('about', '~/about', <AboutContent />)}>
+            <User className="mr-2" />
+            Navigate to About
+          </Command.Item>
         </Command.Group>
 
         <Command.Group heading="Actions">
-            <Command.Item onSelect={() => window.open('https://github.com/Mr-Mamosa', '_blank')}>View GitHub Profile</Command.Item>
-            <Command.Item onSelect={toggleTheme}>Toggle Dark/Matrix Theme</Command.Item>
-            <Command.Item onSelect={() => openWindow('wpm-test', '~/wpm-test', <WPMTest />)}>Run WPM Typing Test</Command.Item>
+            <Command.Item onSelect={() => window.open('https://github.com/Mr-Mamosa', '_blank')}>
+              <Github className="mr-2" />
+              View GitHub Profile
+            </Command.Item>
+            <Command.Item onSelect={toggleTheme}>
+              {theme === 'dark' ? <Sun className="mr-2" /> : <Moon className="mr-2" />}
+              Toggle Theme
+            </Command.Item>
+            <Command.Item onSelect={() => openWindow('wpm-test', '~/wpm-test', <WPMTest />)}>
+              <TestTube className="mr-2" />
+              Run WPM Typing Test
+            </Command.Item>
         </Command.Group>
 
       </Command.List>
