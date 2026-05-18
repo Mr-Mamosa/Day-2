@@ -12,9 +12,11 @@ export default function MatrixRain() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Array tracking the Y-coordinate of each drop
+    // Authentic Matrix characters
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレゲゼデベペオォコソトノホモヨョロゴゾドボポヴッン".split("");
+
     let drops: number[] = [];
-    const fontSize = 14;
+    const fontSize = 16; // Slightly larger for better visibility
 
     const setDimensions = () => {
       canvas.width = window.innerWidth;
@@ -22,27 +24,38 @@ export default function MatrixRain() {
       const columns = Math.floor(canvas.width / fontSize);
       drops = [];
       for (let x = 0; x < columns; x++) {
-        drops[x] = Math.random() * -100; // Randomize start positions
+        // FIX: Start drops randomly ON the screen immediately, not above it
+        drops[x] = Math.random() * (canvas.height / fontSize);
       }
     };
+
     setDimensions();
     window.addEventListener("resize", setDimensions);
 
     const draw = () => {
-      ctx.fillStyle = "rgba(5, 5, 5, 0.15)";
+      // The fading trail effect (keep this dark)
+      ctx.fillStyle = "rgba(5, 5, 5, 0.1)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.font = `${fontSize}px monospace`;
 
       for (let i = 0; i < drops.length; i++) {
         const text = chars[Math.floor(Math.random() * chars.length)];
-        
-        // Varying green intensities for depth
-        const opacity = Math.random() > 0.9 ? "ff" : "99";
-        ctx.fillStyle = `#10b981${opacity}`; 
-        
+
+        // FIX: Use rgba for safer cross-browser opacity handling
+        // 10% chance for a bright glowing character, 90% chance for a standard green
+        if (Math.random() > 0.9) {
+          ctx.fillStyle = "rgba(16, 185, 129, 1)"; // Bright Emerald
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = "rgba(16, 185, 129, 0.8)";
+        } else {
+          ctx.fillStyle = "rgba(16, 185, 129, 0.4)"; // Faded Emerald
+          ctx.shadowBlur = 0;
+        }
+
         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
+        // Reset drop to the top
         if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
           drops[i] = 0;
         }
@@ -50,7 +63,7 @@ export default function MatrixRain() {
       }
     };
 
-    const interval = setInterval(draw, 33); // Runs at ~30fps
+    const interval = setInterval(draw, 33);
 
     return () => {
       clearInterval(interval);
@@ -61,7 +74,9 @@ export default function MatrixRain() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 z-0 opacity-40 pointer-events-none"
+      // FIX: Removed opacity-40 so the glow effect actually works.
+      // Changed to z-0 so it sits behind the relative z-10 children wrappers.
+      className="fixed inset-0 z-0 pointer-events-none"
     />
   );
 }

@@ -23,11 +23,20 @@ export default function RootLayout({
       <body className="bg-[#050505] text-white">
         <WindowProvider>
           <ThemeWrapper>
+            {/* Z-0: The Rain goes in the very back */}
             <MatrixRain />
+
+            {/* Overlays on top of the rain but behind the windows */}
             <div className="scanline-overlay" />
             <div className="noise-overlay" />
+
+            {/* Global UI */}
             <CommandPalette />
-            <div className="relative z-10">{children}</div>
+
+            {/* Z-10: All your content, ThemeWrappers, and Windows go here */}
+            <div className="relative z-10 bg-transparent">
+              {children}
+            </div>
           </ThemeWrapper>
         </WindowProvider>
       </body>
