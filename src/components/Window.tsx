@@ -1,39 +1,51 @@
-"use client";
 import React from "react";
-import { X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { X, Minus, Square } from "lucide-react";
 
-const Window = ({
-  children,
-  title,
-  onClose,
-  isActive,
-  onClick,
-}: {
-  children: React.ReactNode;
+interface WindowProps {
   title: string;
   onClose: () => void;
-  isActive: boolean;
-  onClick: () => void;
-}) => {
+  children: React.ReactNode;
+}
+
+const Window: React.FC<WindowProps> = ({ title, onClose, children }) => {
   return (
-    <div
-      onClick={onClick}
-      className={cn(
-        "bg-[#111111] border rounded-lg flex flex-col overflow-hidden h-full transition-colors duration-200",
-        isActive ? "border-green-500" : "border-zinc-800"
-      )}
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95, y: 10 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95, y: 10 }}
+      transition={{ duration: 0.2 }}
+      className="flex flex-col flex-1 h-full bg-[#0a0a0a] border border-zinc-800 rounded-xl overflow-hidden shadow-2xl relative"
     >
-      <div className="bg-[#1c1c1c] px-4 py-2 border-b border-zinc-800 flex items-center justify-between">
-        <span className="text-sm font-mono">{title}</span>
-        <button onClick={onClose} className="text-zinc-500 hover:text-white">
-          <X size={16} />
-        </button>
+      {/* OS-Style Title Bar */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-zinc-900/50">
+        <div className="flex items-center gap-2 text-zinc-400 font-mono text-xs">
+          <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+          {title}
+        </div>
+
+        {/* Window Controls */}
+        <div className="flex items-center gap-3">
+          <button className="text-zinc-600 hover:text-zinc-300 transition-colors">
+            <Minus size={14} />
+          </button>
+          <button className="text-zinc-600 hover:text-zinc-300 transition-colors">
+            <Square size={12} />
+          </button>
+          <button
+            onClick={onClose}
+            className="text-zinc-600 hover:text-red-400 transition-colors"
+          >
+            <X size={16} />
+          </button>
+        </div>
       </div>
-      <div className="p-4 overflow-y-auto">
+
+      {/* Content Area */}
+      <div className="flex-1 p-6 overflow-y-auto">
         {children}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

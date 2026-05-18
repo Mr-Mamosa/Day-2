@@ -12,16 +12,20 @@
   --foreground: #ededed;
 }
 
-/* Use standard CSS for the body instead of @apply to avoid the error */
+/* Base Body Alignment */
 body {
   background-color: #050505;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 50px 50px; /* Large, subtle engineering grid */
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px; /* Clean engineering matrix grid */
+  color: var(--foreground);
+  overflow-x: hidden;
 }
 
-/* Your custom classes (Grain & Scanlines) */
+/* --- Custom Overlays & Effects --- */
+
+/* Procedural SVG Noise Grain */
 .bg-grain {
   position: fixed;
   top: 0;
@@ -30,29 +34,59 @@ body {
   height: 100%;
   pointer-events: none;
   z-index: 50;
-  opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
+/* Running Laser Scanline Beam */
 .scanline {
   width: 100%;
-  height: 100px;
-  z-index: 50;
-  background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(0,0,0,0) 100%);
-  opacity: 0.1;
-  position: absolute;
-  bottom: 100%;
-  animation: scanline 10s linear infinite;
+  height: 120px;
+  z-index: 45;
+  background: linear-gradient(
+    0deg,
+    rgba(0,0,0,0) 0%,
+    rgba(16, 185, 129, 0.03) 50%,
+    rgba(0,0,0,0) 100%
+  ); /* Subtly tinted emerald green to match the layout context */
+  position: fixed;
+  top: -120px;
+  animation: scanline-run 8s linear infinite;
   pointer-events: none;
 }
 
-@keyframes scanline {
-  0% { bottom: 100%; }
-  100% { bottom: -100%; }
+@keyframes scanline-run {
+  0% { transform: translateY(0vh); }
+  100% { transform: translateY(120vh); }
 }
-/* src/app/globals.css */
 
-/* Spotlight Card Effect */
+/* CRT Mesh Overlay Grid */
+.scanline-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.15) 50%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+  background-size: 100% 4px;
+}
+
+/* Procedural Noise Overlay fallback */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+  opacity: 0.4;
+}
+
+/* Spotlight Card Hover Mechanic */
 .spotlight-card {
   position: relative;
   overflow: hidden;
@@ -63,15 +97,15 @@ body {
   position: absolute;
   inset: 0;
   background: radial-gradient(
-    600px circle at var(--mouse-x) var(--mouse-y),
-    rgba(255, 255, 255, 0.06),
+    600px circle at var(--mouse-x, 0px) var(--mouse-y, 0px),
+    rgba(16, 185, 129, 0.06), /* Tinted to synchronize with the desktop color profiles */
     transparent 40%
   );
   z-index: 1;
   pointer-events: none;
 }
 
-/* Glitch Text Effect */
+/* --- High-End Cyberpunk Glitch Typography --- */
 .glitch-text {
   position: relative;
   display: inline-block;
@@ -85,29 +119,45 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: black;
+  background: #050505;
+  display: none;
 }
 
 .glitch-text:hover::before {
+  display: block;
   left: 2px;
-  text-shadow: -2px 0 #ff00c1;
+  text-shadow: -2px 0 #ef4444;
   clip: rect(44px, 450px, 56px, 0);
-  animation: glitch-anim 5s infinite linear alternate-reverse;
+  animation: glitch-anim 1s infinite linear alternate-reverse;
 }
 
 .glitch-text:hover::after {
+  display: block;
   left: -2px;
-  text-shadow: -2px 0 #00fff9, 2px 2px #ff00c1;
+  text-shadow: -2px 0 #10b981, 2px 2px #3b82f6;
+  clip: rect(12px, 450px, 85px, 0);
   animation: glitch-anim2 1s infinite linear alternate-reverse;
 }
 
+/* Complete Interactive Glitch Vectors */
 @keyframes glitch-anim {
   0% { clip: rect(31px, 9999px, 94px, 0); }
   20% { clip: rect(62px, 9999px, 42px, 0); }
-  /* Add more steps for better glitching */
+  40% { clip: rect(82px, 9999px, 16px, 0); }
+  60% { clip: rect(3px, 9999px, 64px, 0); }
+  80% { clip: rect(45px, 9999px, 89px, 0); }
   100% { clip: rect(89px, 9999px, 98px, 0); }
 }
 
+@keyframes glitch-anim2 {
+  0% { clip: rect(76px, 9999px, 116px, 0); }
+  25% { clip: rect(122px, 9999px, 82px, 0); }
+  50% { clip: rect(61px, 9999px, 32px, 0); }
+  75% { clip: rect(45px, 9999px, 119px, 0); }
+  100% { clip: rect(102px, 9999px, 140px, 0); }
+}
+
+/* --- Atmospheric Ambient Flow Background --- */
 .aurora-effect {
   position: fixed;
   top: 0;
@@ -116,18 +166,15 @@ body {
   height: 100%;
   pointer-events: none;
   z-index: -1;
-  opacity: 0.15;
-  background: radial-gradient(at 20% 80%, hsla(212,100%,50%,0.2) 0px, transparent 50%),
-              radial-gradient(at 80% 20%, hsla(282,100%,50%,0.2) 0px, transparent 50%),
-              radial-gradient(at 80% 80%, hsla(312,100%,50%,0.2) 0px, transparent 50%);
-  animation: aurora-animation 20s ease-in-out infinite alternate;
+  opacity: 0.12;
+  background:
+    radial-gradient(at 15% 75%, hsla(160, 84%, 39%, 0.15) 0px, transparent 50%),
+    radial-gradient(at 85% 25%, hsla(215, 80%, 45%, 0.15) 0px, transparent 50%),
+    radial-gradient(at 75% 85%, hsla(270, 75%, 40%, 0.15) 0px, transparent 50%);
+  animation: aurora-animation 25s ease-in-out infinite alternate;
 }
 
 @keyframes aurora-animation {
-  0% {
-    transform: scale(1) rotate(0deg);
-  }
-  100% {
-    transform: scale(1.5) rotate(10deg);
-  }
+  0% { transform: scale(1) rotate(0deg); }
+  100% { transform: scale(1.3) rotate(8deg); }
 }
