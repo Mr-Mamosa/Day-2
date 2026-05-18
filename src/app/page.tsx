@@ -2,32 +2,24 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import WindowManager from "@/components/WindowManager";
-import { useWindowManager } from "@/context/WindowManagerContext";
 import BootScreen from "@/components/BootScreen";
 
 export default function Home() {
-  const { openWindow } = useWindowManager();
   const [bootComplete, setBootComplete] = useState(false);
 
   return (
-    <main className="w-full h-screen overflow-hidden">
-      {/* 1. Run the kernel boot sequence */}
+    <main className="w-full h-screen overflow-hidden relative">
+      {/* 1. Run the boot sequence */}
       {!bootComplete && <BootScreen onComplete={() => setBootComplete(true)} />}
 
-      {/* 2. Load the desktop normally without breaking fixed CSS positions */}
+      {/* 2. Load the completely empty desktop with the dock */}
       {bootComplete && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.4 }}
-          className="w-full h-full"
-        >
+        <div className="w-full h-full animate-in fade-in duration-700">
           <WindowManager />
-          <Navbar openWindow={openWindow} />
-        </motion.div>
+          <Navbar />
+        </div>
       )}
     </main>
   );

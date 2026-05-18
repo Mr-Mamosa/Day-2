@@ -1,7 +1,6 @@
 /* src/components/content/Home.tsx */
 "use client";
 import { motion } from 'framer-motion';
-import InteractiveTerminal from '@/components/InteractiveTerminal';
 import { projects, socials, resume } from '@/lib/data';
 import { useEffect } from 'react';
 import LiveActivity from '../LiveActivity';
@@ -56,7 +55,7 @@ export default function HomeContent() {
             className="text-zinc-400 text-lg max-w-2xl leading-relaxed"
           >
             AI/ML Specialist & Deep Learning Enthusiast exploring the architectural synergy
-            between <span className="text-white border-b border-zinc-700">Indian Law</span> and Cognitive Technology.
+            between <span className="text-orange-500 border-b border-orange-500/50 pb-1">Indian Law</span> and Cognitive Technology.
           </motion.p>
           <motion.div
             variants={{
@@ -71,7 +70,7 @@ export default function HomeContent() {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-6 py-3 bg-white text-black font-semibold rounded-lg shadow-lg"
+              className="px-6 py-3 bg-zinc-100 text-black font-semibold rounded-lg shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(249,115,22,0.3)] transition-all"
             >
               View GitHub
             </motion.a>
@@ -81,7 +80,7 @@ export default function HomeContent() {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-6 py-3 bg-white/10 text-white border border-zinc-700 rounded-lg"
+              className="px-6 py-3 bg-white/5 text-white border border-zinc-700 rounded-lg hover:border-orange-500/50 hover:text-orange-400 transition-colors"
             >
               Download Resume
             </motion.a>
@@ -94,12 +93,6 @@ export default function HomeContent() {
         <LiveActivity />
       </section>
 
-      {/* Centerpiece Terminal */}
-      <section className="my-24 relative">
-        <div className="absolute inset-0 bg-white/5 blur-[120px] rounded-full -z-10" />
-        <InteractiveTerminal />
-      </section>
-
       {/* Projects Grid */}
       <section id="projects" className="my-32">
         <h2 className="text-sm font-mono text-zinc-500 uppercase tracking-[0.3em] text-center mb-12 italic">
@@ -109,14 +102,13 @@ export default function HomeContent() {
           {projects.map((project, index) => (
             <a key={index} href={project.link} target="_blank" rel="noopener noreferrer">
             <motion.div
-              
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="spotlight-card group bg-zinc-950/50 border border-zinc-800 p-8 rounded-2xl transition-all duration-500 hover:border-zinc-500"
+              className="spotlight-card group bg-zinc-950/50 border border-zinc-800 p-8 rounded-2xl transition-all duration-500 hover:border-orange-500/50"
             >
               <h3 className="text-xl font-bold mb-3">
-                <span className="glitch-text text-white" data-text={project.title}>
+                <span className="glitch-text text-white group-hover:text-orange-400 transition-colors" data-text={project.title}>
                   {project.title}
                 </span>
               </h3>
@@ -136,7 +128,6 @@ export default function HomeContent() {
         </div>
       </section>
 
-      
       {/* Contact Section */}
       <section id="contact" className="my-32 text-center">
         <h2 className="text-sm font-mono text-zinc-500 uppercase tracking-[0.3em] mb-4 italic">
@@ -155,7 +146,7 @@ export default function HomeContent() {
             href="mailto:adnanrev@gmail.com"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="inline-block px-8 py-4 bg-white text-black font-semibold rounded-lg shadow-lg mb-12"
+            className="inline-block px-8 py-4 bg-zinc-100 text-black font-semibold rounded-lg shadow-lg mb-12 hover:shadow-[0_0_20px_rgba(249,115,22,0.3)] transition-shadow"
           >
             Say Hello
           </motion.a>
@@ -168,7 +159,7 @@ export default function HomeContent() {
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.2, y: -5 }}
                 transition={{ type: 'spring', stiffness: 300 }}
-                className="text-zinc-400 hover:text-white"
+                className="text-zinc-500 hover:text-orange-400 transition-colors"
               >
                 <social.icon size={24} />
               </motion.a>
